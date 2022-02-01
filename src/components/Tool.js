@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import languages from '../libs/languages';
 import { t, Translate } from 'react-i18nify';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { getExt, download } from '../utils';
 import { file2sub, sub2vtt, sub2srt, sub2txt } from '../libs/readSub';
 import sub2ass from '../libs/readSub/sub2ass';
+import { vtt2url, url2sub } from '../libs/readSub';
 import googleTranslate from '../libs/googleTranslate';
 import FFmpeg from '@ffmpeg/ffmpeg';
 import SimpleFS from '@forlagshuset/simple-fs';
@@ -22,6 +23,8 @@ const Style = styled.div`
     .import {
         display: flex;
         justify-content: space-between;
+        flex-direction: column;
+        gap: 10px;
         padding: 10px;
         border-bottom: 1px solid rgb(255 255 255 / 20%);
 
@@ -59,6 +62,7 @@ const Style = styled.div`
 
     .burn {
         display: flex;
+        flex-direction: column;
         justify-content: space-between;
         padding: 10px;
         border-bottom: 1px solid rgb(255 255 255 / 20%);
@@ -256,6 +260,24 @@ export default function Header({
 }) {
     const [translate, setTranslate] = useState('en');
     const [videoFile, setVideoFile] = useState(null);
+
+    const handleSubmit = async () => {
+        let videoURL = prompt('Enter Video URL');
+        if (!videoURL) return;
+
+        setLoading(t('LOADING_VIDEO'));
+        const data = await fetch(
+            `https://youtube-dl-utils-api.herokuapp.com/get_youtube_video_link_with_captions?url=${videoURL}`,
+        ).then((res) => res.json());
+        const subs = await fetch(data.subtitles).then((res) => res.text());
+        const url = vtt2url(subs);
+        const sub = await url2sub(url);
+        console.log(sub);
+        setSubtitle(sub);
+        player.currentTime = 0;
+        player.src = data.video;
+        setLoading('');
+    };
 
     const decodeAudioData = useCallback(
         async (file) => {
@@ -476,13 +498,19 @@ export default function Header({
         <Style className="tool">
             <div className="top">
                 <div className="import">
-                    <div className="btn">
-                        <Translate value="OPEN_VIDEO" />
-                        <input className="file" type="file" onChange={onVideoChange} onClick={onInputClick} />
+                    <div className="btn" style={{ width: '100%' }}>
+                        <Translate value="OPEN_VIDEO_URL" />
+                        <button className="file" type="file" onClick={handleSubmit} />
                     </div>
-                    <div className="btn">
-                        <Translate value="OPEN_SUB" />
-                        <input className="file" type="file" onChange={onSubtitleChange} onClick={onInputClick} />
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div className="btn">
+                            <Translate value="OPEN_VIDEO" />
+                            <input className="file" type="file" onChange={onVideoChange} onClick={onInputClick} />
+                        </div>
+                        <div className="btn">
+                            <Translate value="OPEN_SUB" />
+                            <input className="file" type="file" onChange={onSubtitleChange} onClick={onInputClick} />
+                        </div>
                     </div>
                 </div>
                 {window.crossOriginIsolated ? (

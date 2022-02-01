@@ -47,6 +47,7 @@ export function file2sub(file) {
                 }
             } else {
                 const text = reader.result.replace(/{[\s\S]*?}/g, '');
+                console.log(text);
                 switch (ext) {
                     case 'vtt': {
                         const url = vtt2url(text);
