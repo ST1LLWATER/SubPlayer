@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import languages from '../libs/languages';
 import { t, Translate } from 'react-i18nify';
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { getExt, download } from '../utils';
 import { file2sub, sub2vtt, sub2srt, sub2txt } from '../libs/readSub';
 import sub2ass from '../libs/readSub/sub2ass';
@@ -269,12 +269,14 @@ export default function Header({
         const data = await fetch(
             `https://youtube-dl-utils-api.herokuapp.com/get_youtube_video_link_with_captions?url=${videoURL}`,
         ).then((res) => res.json());
+        waveform.decoder.destroy();
+        waveform.drawer.update();
+        waveform.seek(0);
+        player.currentTime = 0;
         const subs = await fetch(data.subtitles).then((res) => res.text());
         const url = vtt2url(subs);
         const sub = await url2sub(url);
-        console.log(sub);
         setSubtitle(sub);
-        player.currentTime = 0;
         player.src = data.video;
         setLoading('');
     };
@@ -499,7 +501,7 @@ export default function Header({
             <div className="top">
                 <div className="import">
                     <div className="btn" style={{ width: '100%' }}>
-                        <Translate value="OPEN_VIDEO_URL" />
+                        <Translate value="OPEN VIDEO" />
                         <button className="file" type="file" onClick={handleSubmit} />
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
