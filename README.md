@@ -1,25 +1,19 @@
-# SubPlayer
+# Getting Started with the player
 
-> SubPlayer is an online subtitle editor
+This project was bootstrapped with [Create React App]
 
-![Screenshot](./images/screenshot6.png)
+## Available Scripts
 
-## Homepage
+To run this project, In the project directory:
 
-[https://subplayer.js.org](https://subplayer.js.org)
+### `npm install`
 
-## Donations
+Install all the node modules to run the app.
 
-We accept donations through these channels:
+### `npm start`
 
-![pay](./public/pay.png)
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
--   [Paypal](https://www.paypal.me/harveyzack)
+### Added feature to play videos from youtube url.
 
-## QQ Group
-
-![QQ Group](./public/qqgroup.png)
-
-## License
-
-MIT © Harvey Zack
