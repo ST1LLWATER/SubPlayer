@@ -1,6 +1,7 @@
 # Getting Started with the player
 
 This project was bootstrapped with [Create React App]
+If the website doesnt load in chrome, try opening in firefox or incognito window. Browser cache seem to conflict with the scripts.
 
 ## Available Scripts
 
