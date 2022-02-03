@@ -273,11 +273,15 @@ export default function Header({
         waveform.drawer.update();
         waveform.seek(0);
         player.currentTime = 0;
+        player.src = data.video;
+        if (!data.subtitles) {
+            setLoading('');
+            return;
+        }
         const subs = await fetch(data.subtitles).then((res) => res.text());
         const url = vtt2url(subs);
         const sub = await url2sub(url);
         setSubtitle(sub);
-        player.src = data.video;
         setLoading('');
     };
 
